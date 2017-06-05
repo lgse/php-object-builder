@@ -6,12 +6,14 @@ use InvalidArgumentException;
 /**
  * Class Model
  * @package PHPOB
+ * @author Pierre Bérubé <pierre@lgse.com>
  */
 abstract class Model
 {
     /**
      * @param array|object $arguments
      * @return mixed
+     * @throws InvalidArgumentException
      */
     public static function getInstance($arguments)
     {
@@ -24,13 +26,9 @@ abstract class Model
             );
         }
 
-        if (is_object($arguments)) {
-            $arguments = (array) $arguments;
-        }
-
         $objectClass = get_called_class();
         $builder = new ObjectBuilder($objectClass, $arguments);
 
-        return $builder->getObject($arguments);
+        return $builder->getObject((array) $arguments);
     }
 }

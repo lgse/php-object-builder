@@ -6,7 +6,8 @@ use ReflectionClass;
 
 /**
  * Class ObjectBuilder
- * @package PHP
+ * @package PHPOB
+ * @author Pierre Bérubé <pierre@lgse.com>
  */
 class ObjectBuilder
 {
@@ -84,6 +85,7 @@ class ObjectBuilder
      * @param $argument
      * @param $argumentExists
      * @param $parameter
+     * @throws InvalidArgumentException
      */
     private function isArgumentValidForParameter($argument, $argumentExists, $parameter)
     {
