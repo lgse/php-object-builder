@@ -1,0 +1,30 @@
+{
+  "name": "lgse/php-object-builder",
+  "description": "PHP 7+ Object Builder",
+  "type": "library",
+  "require": {
+    "php": "^7"
+  },
+  "require-dev" : {
+    "phpunit/phpunit" : "^5.6",
+    "mockery/mockery": "^0.9.8",
+    "fzaninotto/faker": "^1.6"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pierre Bérubé",
+      "email": "pierre@lgse.com"
+    }
+  ],
+  "autoload" : {
+    "psr-4" : {
+      "PHPOB\\": "src"
+    }
+  },
+  "autoload-dev" : {
+    "psr-4" : {
+      "Tests\\PHPOB\\": "tests"
+    }
+  }
+}
