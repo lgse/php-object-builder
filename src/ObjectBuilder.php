@@ -59,9 +59,19 @@ class ObjectBuilder
 
             foreach ($constructor->getParameters() as $parameter) {
                 $name = (string) $parameter->getName();
+                $parameterType = (string) $parameter->getType();
+
+                /**
+                 * Fix PHP Scalar Type inequivalence
+                 * (int) $string does not cast to type int, but integer natively
+                 */
+                if ($parameterType === 'int') {
+                    $parameterType = 'integer';
+                }
+
                 $details = [
                     'name' => $name,
-                    'type' => (string) $parameter->getType(),
+                    'type' => $parameterType,
                     'class' => !is_null($parameter->getClass()) ? $parameter->getClass()->getName() : null,
                     'nullable' => $parameter->allowsNull(),
                     'optional' => $parameter->isOptional()
