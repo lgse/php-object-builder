@@ -77,7 +77,8 @@ class ObjectBuilder
                     'type' => $parameterType,
                     'class' => !is_null($parameter->getClass()) ? $parameter->getClass()->getName() : null,
                     'nullable' => $parameter->allowsNull(),
-                    'optional' => $parameter->isOptional()
+                    'optional' => $parameter->isOptional(),
+                    'default' => $parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null,
                 ];
 
                 if (!$parameter->allowsNull() && !$parameter->isOptional()) {
@@ -172,7 +173,10 @@ class ObjectBuilder
                 $score += 1;
             }
         }
-        return (($score / count($this->requiredConstructorParameters)) * 100) > 50;
+
+        $cpCount = count($this->constructorParameters);
+        $rcpCount = count($this->requiredConstructorParameters);
+        return $rcpCount > 0 ? (($score / $rcpCount) * 100) > 50 : $cpCount === 1;
     }
 
     /**
@@ -195,7 +199,13 @@ class ObjectBuilder
             $constructorArguments[] = $this->buildParameter($arguments, $firstParameter);
         } else {
             foreach ($this->constructorParameters as $parameterName => $parameter) {
-                $argument = isset($arguments[$parameterName]) ? $arguments[$parameterName] : null;
+                if (isset($arguments[$parameterName])) {
+                    $argument = $arguments[$parameterName];
+                } elseif (!is_null($parameter['default'])) {
+                    $argument = $parameter['default'];
+                } else {
+                    $argument = null;
+                }
                 $argumentExists = array_key_exists($parameterName, $arguments);
                 $this->isArgumentValidForParameter($argument, $argumentExists, $parameter);
                 $constructorArguments[] = $this->buildParameter($argument, $parameter);
