@@ -64,9 +64,12 @@ class ObjectBuilder
                 /**
                  * Fix PHP Scalar Type inequivalence
                  * (int) $string does not cast to type int, but integer natively
+                 * (bool) $string does not cast to type bool, but boolean natively
                  */
                 if ($parameterType === 'int') {
                     $parameterType = 'integer';
+                } elseif ($parameterType === 'bool') {
+                    $parameterType = 'boolean';
                 }
 
                 $details = [

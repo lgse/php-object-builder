@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 /**
- * Class Base
+ * Class Test
  * @package Tests\PHPOB
  * @author Pierre Bérubé <pierre@lgse.com>
  */
