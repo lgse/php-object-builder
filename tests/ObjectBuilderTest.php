@@ -6,7 +6,7 @@ use PHPUnit\Framework\Assert;
 use Tests\PHPOB\Mocks\MockClass;
 use Tests\PHPOB\Mocks\MockClassWithArrayParameter;
 use Tests\PHPOB\Mocks\MockClassWithoutConstructor;
-use Tests\PHPOB\Mocks\MockClassWithBooleanIntegerDefaultParameters;
+use Tests\PHPOB\Mocks\MockClassWithBooleanIntegerFloatParameters;
 use ReflectionClass;
 use Tests\PHPOB\Mocks\MockClassWithoutParameters;
 
@@ -89,10 +89,12 @@ class ObjectBuilderTest extends Test
 
     public function testSetConstructorParametersTypeCastsParametersProperly()
     {
-        $builder = new ObjectBuilder(MockClassWithBooleanIntegerDefaultParameters::class);
+        $builder = new ObjectBuilder(MockClassWithBooleanIntegerFloatParameters::class);
         $object = $builder->getObject([
             'int' => 1,
+            'bool' => false,
+            'float' => (float) 1,
         ]);
-        Assert::assertInstanceOf(MockClassWithBooleanIntegerDefaultParameters::class, $object);
+        Assert::assertInstanceOf(MockClassWithBooleanIntegerFloatParameters::class, $object);
     }
 }

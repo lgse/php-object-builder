@@ -22,10 +22,6 @@ class ObjectBuilder
     /**
      * @var array
      */
-    private $requiredConstructorParameters = [];
-    /**
-     * @var array
-     */
     private static $cache = [];
 
     /**
@@ -44,8 +40,7 @@ class ObjectBuilder
     private function setConstructorParameters()
     {
         if (isset(self::$cache[$this->className])) {
-            $this->constructorParameters = self::$cache[$this->className]['constructorParameters'];
-            $this->requiredConstructorParameters = self::$cache[$this->className]['requiredConstructorParameters'];
+            $this->constructorParameters = self::$cache[$this->className];
         } else {
             $reflectionClass = new ReflectionClass($this->className);
             $constructor = $reflectionClass->getConstructor();
@@ -65,11 +60,14 @@ class ObjectBuilder
                  * Fix PHP Scalar Type inequivalence
                  * (int) $string does not cast to type int, but integer natively
                  * (bool) $string does not cast to type bool, but boolean natively
+                 * (float) $string does not cast to type float, but double natively
                  */
                 if ($parameterType === 'int') {
                     $parameterType = 'integer';
                 } elseif ($parameterType === 'bool') {
                     $parameterType = 'boolean';
+                } elseif ($parameterType === 'float') {
+                    $parameterType = 'double';
                 }
 
                 $details = [
@@ -81,17 +79,10 @@ class ObjectBuilder
                     'default' => $parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null,
                 ];
 
-                if (!$parameter->allowsNull() && !$parameter->isOptional()) {
-                    $this->requiredConstructorParameters[$name] = $details;
-                }
-
                 $this->constructorParameters[$name] = $details;
             }
 
-            self::$cache[$this->className] = [
-                'constructorParameters' => $this->constructorParameters,
-                'requiredConstructorParameters' => $this->requiredConstructorParameters,
-            ];
+            self::$cache[$this->className] = $this->constructorParameters;
         }
     }
 
@@ -163,24 +154,6 @@ class ObjectBuilder
 
     /**
      * @param $arguments
-     * @return bool
-     */
-    private function isSingleArgument($arguments)
-    {
-        $score = 0;
-        foreach ($this->requiredConstructorParameters as $parameter) {
-            if (!array_key_exists($parameter['name'], $arguments)) {
-                $score += 1;
-            }
-        }
-
-        $cpCount = count($this->constructorParameters);
-        $rcpCount = count($this->requiredConstructorParameters);
-        return $rcpCount > 0 ? (($score / $rcpCount) * 100) > 50 : $cpCount === 1;
-    }
-
-    /**
-     * @param $arguments
      * @return mixed
      */
     public function getObject($arguments)
@@ -191,7 +164,13 @@ class ObjectBuilder
             return new $this->className();
         }
 
-        if (is_array($arguments) && $this->isSingleArgument($arguments)) {
+        $firstParameter = current($this->constructorParameters);
+
+        if (
+            is_array($arguments)
+            && !array_key_exists($firstParameter['name'], array_keys($this->constructorParameters))
+            && ($firstParameter['type'] === 'array' || $firstParameter['optional'])
+        ) {
             $constructorArguments[] = $arguments;
         } elseif (!is_array($arguments) || is_null($arguments)) {
             $firstParameter = current($this->constructorParameters);
