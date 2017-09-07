@@ -168,7 +168,7 @@ class ObjectBuilder
 
         if (
             is_array($arguments)
-            && !array_key_exists($firstParameter['name'], array_keys($this->constructorParameters))
+            && !array_key_exists($firstParameter['name'], $arguments)
             && $firstParameter['type'] === 'array'
         ) {
             $constructorArguments[] = $arguments;
