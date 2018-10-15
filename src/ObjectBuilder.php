@@ -167,9 +167,12 @@ class ObjectBuilder
         $firstParameter = current($this->constructorParameters);
 
         if (
-            is_array($arguments)
-            && !array_key_exists($firstParameter['name'], $arguments)
-            && $firstParameter['type'] === 'array'
+            (
+                is_array($arguments)
+                && !array_key_exists($firstParameter['name'], $arguments)
+                && $firstParameter['type'] === 'array'
+            )
+            || count($this->constructorParameters) === 1
         ) {
             $constructorArguments[] = $arguments;
         } elseif (!is_array($arguments) || is_null($arguments)) {
