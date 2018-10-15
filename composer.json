@@ -1,16 +1,15 @@
 {
     "name": "lgse/php-object-builder",
-    "description": "PHP 7+ Object Builder",
+    "description": "PHP 7.1+ Object Builder",
     "keywords": ["object", "builder"],
     "homepage": "https://github.com/lgse/php-object-builder",
     "type": "library",
     "require": {
-        "php": ">=7.0"
+        "php": ">=7.1"
     },
     "require-dev" : {
-        "phpunit/phpunit" : "^5.6",
-        "mockery/mockery": "^0.9.8",
-        "fzaninotto/faker": "^1.6"
+        "phpunit/phpunit" : "^7.0",
+        "mockery/mockery": "^0.9.8"
     },
     "license": "MIT",
     "authors": [
