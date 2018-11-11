@@ -2,6 +2,7 @@
 namespace PHPOB;
 
 use InvalidArgumentException;
+use ReflectionException;
 
 /**
  * Class Model
@@ -11,9 +12,9 @@ use InvalidArgumentException;
 abstract class Model
 {
     /**
-     * @param array|object $arguments
+     * @param $arguments
      * @return mixed
-     * @throws InvalidArgumentException
+     * @throws ReflectionException
      */
     public static function getInstance($arguments)
     {
@@ -27,7 +28,7 @@ abstract class Model
         }
 
         $objectClass = get_called_class();
-        $builder = new ObjectBuilder($objectClass, $arguments);
+        $builder = new ObjectBuilder($objectClass);
 
         return $builder->getObject((array) $arguments);
     }
