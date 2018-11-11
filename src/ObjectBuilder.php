@@ -3,6 +3,7 @@ namespace PHPOB;
 
 use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionException;
 
 /**
  * Class ObjectBuilder
@@ -15,10 +16,12 @@ class ObjectBuilder
      * @var string
      */
     private $className;
+
     /**
      * @var array
      */
     private $constructorParameters = [];
+
     /**
      * @var array
      */
@@ -26,7 +29,8 @@ class ObjectBuilder
 
     /**
      * ObjectBuilder constructor.
-     * @param $className
+     * @param string $className
+     * @throws ReflectionException
      */
     public function __construct(string $className)
     {
@@ -36,6 +40,7 @@ class ObjectBuilder
 
     /**
      * @return void
+     * @throws ReflectionException
      */
     private function setConstructorParameters()
     {
@@ -97,6 +102,16 @@ class ObjectBuilder
         $argumentClass = is_object($argument) ? get_class($argument) : null;
         $argumentType = gettype($argument);
 
+        if ($argumentType === 'string' && $parameter['type'] === 'integer') {
+            $argument = (int) $argument;
+            $argumentType = 'integer';
+        }
+
+        if (($argumentType === 'integer' || $argumentType === 'string') && $parameter['type'] === 'double') {
+            $argument = (float) $argument;
+            $argumentType = 'double';
+        }
+
         if (
             $argumentExists
             && is_null($argument)
@@ -135,7 +150,8 @@ class ObjectBuilder
     /**
      * @param $argument
      * @param $parameter
-     * @return mixed
+     * @return mixed|null
+     * @throws ReflectionException
      */
     private function buildParameter($argument, $parameter)
     {
@@ -155,6 +171,7 @@ class ObjectBuilder
     /**
      * @param $arguments
      * @return mixed
+     * @throws ReflectionException
      */
     public function getObject($arguments)
     {
