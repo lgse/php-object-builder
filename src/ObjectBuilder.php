@@ -58,8 +58,8 @@ class ObjectBuilder
             }
 
             foreach ($constructor->getParameters() as $parameter) {
-                $name = (string) $parameter->getName();
-                $parameterType = (string) $parameter->getType();
+                $name = $parameter->getName();
+                $parameterType = $parameter->getType() ? $parameter->getType()->getName() : null;
 
                 /**
                  * Fix PHP Scalar Type inequivalence
